@@ -1,0 +1,16 @@
+name: Deploy images to Vercel
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+on:
+  push:
+    branches:
+      - main
+jobs:
+  Deploy-Production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt install imagemagick
+      - run: for file in *.png; do convert "$file" "${file%.png}.webp" && rm "$file"; done
+      - run: npx vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
